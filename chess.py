@@ -7,22 +7,22 @@ class Figure:
         self.pos = pos
         self.color = color
 
-    def calculate_possible_moves(self, field: dict) -> list:
-        """
+    def clc_poss_moves(self, field: dict) -> list:
+        '''
         Метод просчитывает все возможные ходы для данной фигуры.
-        :param field: игровое поле (словарь)
-        :return: список возможных позиций фигуры после хода
-        """
+        :параметр field: игровое поле (словарь)
+        :возращает: список возможных позиций фигуры после хода
+        '''
         pass
 
     def step(self, field: dict, move: str) -> (dict, str):
-        """
+        '''
         Метод перемещения фигуры на указанную клетку
-        :param field: игровое поле (словарь)
-        :param move: на какую клетку сходить
-        :return: (поле после хода, цвет следующего игрока)
-        """
-        if field[self.pos[0]][''.join([i for i in self.pos if i.isdigit()])].__str__() in 'Kk' and move in ['C8', 'C1', 'G8', 'G1'] and ('0-0' in self.calculate_possible_moves(field) or '0-0-0' in self.calculate_possible_moves(field)):
+        :параметр field: игровое поле (словарь)
+        :параметр move: на какую клетку сходить
+        :возращает: (поле после хода, цвет следующего игрока)
+        '''
+        if field[self.pos[0]][''.join([i for i in self.pos if i.isdigit()])].__str__() in 'Kk' and move in ['C8', 'C1', 'G8', 'G1'] and ('0-0' in self.clc_poss_moves(field) or '0-0-0' in self.clc_poss_moves(field)):
             if move == 'C8':
                 field['C']['8'] = 'k'
                 field['D']['8'] = 'r'
@@ -73,7 +73,7 @@ class Pawn(Figure):
     def __init__(self, pos: str, color: str):
         super().__init__(pos, color)
 
-    def calculate_possible_moves(self, field):
+    def clc_poss_moves(self, field):
         possible_moves = []
         if self.color == 'White':
             temp = 1 if len(field['A']) == 8 else 2
@@ -110,7 +110,7 @@ class Rook(Figure):
     def __init__(self, pos: str, color: str):
         super().__init__(pos, color)
 
-    def calculate_possible_moves(self, field):
+    def clc_poss_moves(self, field):
         temp = 1 if len(field['A'].keys()) == 8 else 2
         possible_moves = []
         for index in range(int(''.join([i for i in self.pos if i.isdigit()])) + temp, len(field['A'].keys())+1, temp):
@@ -156,7 +156,7 @@ class Knight(Figure):
     def __init__(self, pos: str, color: str):
         super().__init__(pos, color)
 
-    def calculate_possible_moves(self, field):
+    def clc_poss_moves(self, field):
         vectors = [(1, 2), (-1, 2), (1, -2), (-1, -2), (2, 1), (2, -1), (-2, 1), (-2, -1)]
         if len(field['A'].keys()) != 8:
             vectors = [(i[0],i[1]*2+(1 if i[1]> 0 else -1)) for i in vectors if abs(i[0]) == 1] + [(i[0]*2+(1 if i[0]> 0 else -1),i[1]) for i in vectors if abs(i[0]) == 2]
@@ -181,7 +181,7 @@ class Bishop(Figure):
     def __init__(self, pos: str, color: str):
         super().__init__(pos, color)
 
-    def calculate_possible_moves(self, field):
+    def clc_poss_moves(self, field):
         possible_moves = []
         temp = 1 if len(field['A'].keys()) == 8 else 2
         try:
@@ -246,8 +246,8 @@ class Queen(Figure):
     def __init__(self, pos: str, color: str):
         super().__init__(pos, color)
 
-    def calculate_possible_moves(self, field):
-        return Rook(self.pos, self.color).calculate_possible_moves(field)+Bishop(self.pos,self.color).calculate_possible_moves(field)
+    def clc_poss_moves(self, field):
+        return Rook(self.pos, self.color).clc_poss_moves(field)+Bishop(self.pos,self.color).clc_poss_moves(field)
 
     def __str__(self):
         return 'Q' if self.color == 'White' else 'q'
@@ -258,7 +258,7 @@ class King(Figure):
     def __init__(self, pos: str, color: str):
         super().__init__(pos, color)
 
-    def calculate_possible_moves(self, field):
+    def clc_poss_moves(self, field):
         possible_moves = []
         for first in range(-1, 2):
             for second in range(-1, 2):
@@ -276,12 +276,12 @@ class King(Figure):
         return 'K' if self.color == 'White' else 'k'
 
 
-class Infantry(Figure):
+class IFight(Figure):
 
     def __init__(self, pos, color):
         super().__init__(pos, color)
 
-    def calculate_possible_moves(self, field: dict) -> list:
+    def clc_poss_moves(self, field: dict) -> list:
         possible_moves = []
         vectors = [(0,1), (-1,1),(1,1)] if self.color == 'White' else [(0, -1), (-1,-1), (1,-1)]
         enemy_color = 'Black' if self.color == 'White' else 'White'
@@ -297,13 +297,13 @@ class Infantry(Figure):
         return 'I' if self.color == 'White' else 'i'
 
 
-class Archbishop(Figure):
+class Knishop(Figure):
 
     def __init__(self, pos, color):
         super().__init__(pos, color)
 
-    def calculate_possible_moves(self, field: dict) -> list:
-        possible_moves = Knight(self.pos, self.color).calculate_possible_moves(field) + Bishop(self.pos, self.color).calculate_possible_moves(field)
+    def clc_poss_moves(self, field: dict) -> list:
+        possible_moves = Knight(self.pos, self.color).clc_poss_moves(field) + Bishop(self.pos, self.color).clc_poss_moves(field)
         return possible_moves
 
     def __str__(self):
@@ -315,8 +315,8 @@ class Chancellor(Figure):
     def __init__(self, pos, color):
         super().__init__(pos, color)
 
-    def calculate_possible_moves(self, field: dict) -> list:
-        possible_moves = Knight(self.pos, self.color).calculate_possible_moves(field) + Rook(self.pos, self.color).calculate_possible_moves(field)
+    def clc_poss_moves(self, field: dict) -> list:
+        possible_moves = Knight(self.pos, self.color).clc_poss_moves(field) + Rook(self.pos, self.color).clc_poss_moves(field)
         return possible_moves
 
     def __str__(self):
@@ -609,12 +609,12 @@ class ChessGame(Game):
     }
 
     mod_field = copy.deepcopy(base_field)
-    mod_field['G']['2'] = Infantry('G2', 'White')
-    mod_field['G']['7'] = Infantry('G7', 'Black')
-    mod_field['B']['2'] = Infantry('B2', 'White')
-    mod_field['B']['7'] = Infantry('B7', 'Black')
-    mod_field['F']['1'] = Archbishop('F1', 'White')
-    mod_field['F']['8'] = Archbishop('F8', 'Black')
+    mod_field['G']['2'] = IFight('G2', 'White')
+    mod_field['G']['7'] = IFight('G7', 'Black')
+    mod_field['B']['2'] = IFight('B2', 'White')
+    mod_field['B']['7'] = IFight('B7', 'Black')
+    mod_field['F']['1'] = Knishop('F1', 'White')
+    mod_field['F']['8'] = Knishop('F8', 'Black')
     mod_field['B']['1'] = Chancellor('B1', 'White')
     mod_field['B']['8'] = Chancellor('B8', 'Black')
 
@@ -637,12 +637,12 @@ class ChessGame(Game):
             self.field = ChessGame.hex_field
 
     def print_field(self, green: list or None = None, red: list or None=None) -> None:
-        """
+        '''
         Метод отрисовывает поле в консоль
-        :param green: массив позиций фигур, которые могут быть съедены игроком
-        :param red: массив позиций фигур, которые могут быть съедены противником в следующий ход
-        :return: None
-        """
+        :параметр green: массив позиций фигур, которые могут быть съедены игроком
+        :параметр red: массив позиций фигур, которые могут быть съедены противником в следующий ход
+        :возращает: None
+        '''
         green = [] if green is None else green
         red = [] if red is None else red
         print('   ', end=' ')
@@ -670,11 +670,11 @@ class ChessGame(Game):
         print()
 
     def under_fire(self, color: str) -> list:
-        """
+        '''
         Метод просчитывает все фигуры игрока, переданного цвета, который могут быть съедены противником
-        :param color: цвет игрока, который ходит
-        :return: список фигур, который находиться под атакой
-        """
+        :параметр color: цвет игрока, который ходит
+        :возращает: список фигур, который находиться под атакой
+        '''
         enemy_color = 'Black' if color == 'White' else 'White'
         under_fire_figures = []
         for ally_key in self.field.keys():
@@ -683,27 +683,27 @@ class ChessGame(Game):
                     for key in self.field.keys():
                         for number in self.field[key].keys():
                             if self.field[key][number].__str__() in self.figures[enemy_color]:
-                                if (ally_key + ally_number) in self.field[key][number].calculate_possible_moves(self.field):
+                                if (ally_key + ally_number) in self.field[key][number].clc_poss_moves(self.field):
                                     under_fire_figures.append(ally_key + ally_number)
         return under_fire_figures
 
     def check_check(self, color: str) -> bool:
-        """
+        '''
         Метод проверяет находиться ли король игрока переданного цвета под шахом
-        :param color: цвет игрока
-        :return: True - король под шахом, False - шаха нет
-        """
+        :параметр color: цвет игрока
+        :возращает: True - король под шахом, False - шаха нет
+        '''
         pos_king = self.find_king(color)
         if pos_king in self.under_fire(color):
             return True
         return False
 
     def find_king(self, color: str) -> str:
-        """
+        '''
         Метод находит позицию короля игрока, переданного цвета, на игровом поле
-        :param color: цвет игрока
-        :return: позиция короля на игровом поле
-        """
+        :параметр color: цвет игрока
+        :возращает: позиция короля на игровом поле
+        '''
         figure = 'K' if color == 'White' else 'k'
         pos_king = ''
         for key in self.field.keys():
@@ -713,16 +713,16 @@ class ChessGame(Game):
         return pos_king
 
     def check_mate(self, color: str) -> bool:
-        """
+        '''
         Метод проверяет стоит ли мат игроку, переданного цвета
-        :param color: цвет игрока
-        :return: True - мат, False - нет мата
-        """
+        :параметр color: цвет игрока
+        :возращает: True - мат, False - нет мата
+        '''
         temp = True
         for key in self.field.keys():
             for number in self.field[key].keys():
                 if self.field[key][number].__str__() in self.figures[color]:
-                    tmp = self.field[key][number].calculate_possible_moves(self.field)
+                    tmp = self.field[key][number].clc_poss_moves(self.field)
                     for possible_move in tmp:
                         self.field = self.field[key][number].step(self.field, possible_move)[0]
                         if not self.check_check(color):
@@ -739,12 +739,12 @@ class ChessGame(Game):
         return temp
 
     def tips(self, possible_moves: list, color: str) -> None:
-        """
+        '''
         Выводит в консоль поле с подсказками для ходящего игрока
-        :param possible_moves: все возможные ходы для выбранной фигуры
-        :param color: цвет игрока
-        :return: None
-        """
+        :параметр possible_moves: все возможные ходы для выбранной фигуры
+        :параметр color: цвет игрока
+        :возращает: None
+        '''
         green = []
         for step in possible_moves:
             if step == '0-0':
@@ -766,10 +766,10 @@ class ChessGame(Game):
         self.clear_tips()
 
     def clear_tips(self) -> None:
-        """
+        '''
         Удаляет подсказки с поля
-        :return: None
-        """
+        :возращает: None
+        '''
         for key in self.field.keys():
             for number in self.field[key].keys():
                 if self.field[key][number] == '*':
@@ -783,13 +783,13 @@ class ChessGame(Game):
         elif name == 'B':
             return Bishop
         elif name =='I':
-            return Infantry
+            return IFight
         elif name == 'R':
             return Rook
         elif name == 'N':
             return Knight
         elif name == 'S':
-            return Archbishop
+            return Knishop
         elif name == 'E':
             return Chancellor
         elif name == 'K':
@@ -900,7 +900,7 @@ class ChessGame(Game):
                         print('\033[31m' + 'Сейчас ход фигур другого цвета' + '\033[0m')
                         self.play(moves, flag)
                     else:
-                        possible_moves = figure.calculate_possible_moves(self.field)
+                        possible_moves = figure.clc_poss_moves(self.field)
                         if not possible_moves:
                             print('\033[31m' + 'Этой фигурой некуда сходить' + '\033[0m')
                         self.tips(possible_moves, flag)
