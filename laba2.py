@@ -7,7 +7,10 @@ from PyQt6.QtWidgets import *
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
-
+        
+        self.speed = 50  
+        self.direction = 1
+        
         self.label = QtWidgets.QLabel()
         self.setFixedSize(600, 600)
         canvas = QtGui.QPixmap(600, 600)
@@ -20,6 +23,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.StartDraw()
         self.animation2()
 
+    def set_speed(self, speed):
+        self.speed = speed
+        self.animation2()
+
     def animation2(self):
         self.child = QWidget(self)
         self.child.setStyleSheet("""
@@ -30,35 +37,31 @@ class MainWindow(QtWidgets.QMainWindow):
             max-width: 5px;
             background-color: red;
         """)
-        '''
-        self.anim = QPropertyAnimation(self.child, b"pos")
-        self.anim.setStartValue(QPoint(325, 275))
-        self.anim.setEndValue(QPoint(325, 275))
-        '''
+        
         self.anim_group = QSequentialAnimationGroup()
-        #self.anim_group.addAnimation(self.anim)
-        for i in range(0, 61, 2):
-            pointXY = QPoint(int(297.5 + 50 * math.cos(i/10)), int(297.5 + 50 * math.sin(i/10)))
+        
+        for i in range(0, 361, 4):  
+            angle = math.radians(i * self.direction) 
+            pointXY = QPoint(int(297.5 + 100 * math.cos(angle)), int(297.5 + 100 * math.sin(angle)))
             self.anim = QPropertyAnimation(self.child, b"pos")
             self.anim.setEndValue(pointXY)
-            self.anim.setDuration(50)
+            self.anim.setDuration(self.speed) 
             self.anim_group.addAnimation(self.anim)
-        self.anim_group.setLoopCount(-1)
+        
+        self.anim_group.setLoopCount(-1) 
         self.anim_group.start()
 
-
     def StartDraw(self):
-        c_rad = 100
-
+        c_rad = 200
         canvas = self.label.pixmap()
         painter = QtGui.QPainter(canvas)
         pen = QtGui.QPen()
         pen.setWidth(10)
         pen.setColor(QtGui.QColor('blue'))
         
-        painter.drawRoundedRect(300 - c_rad//2, 300 - c_rad//2, c_rad, c_rad, c_rad//2, c_rad//2)
-        painter.drawLine(0, 300, 600, 300)
-        painter.drawLine(300, 0, 300, 600)
+        painter.drawRoundedRect(300 - c_rad // 2,  300 - c_rad // 2, c_rad, c_rad, c_rad // 2, c_rad // 2)
+        #painter.drawLine(0, 300, 600, 300)
+        #painter.drawLine(300, 0, 300, 600)
         
         painter.end()
         self.label.setPixmap(canvas)
