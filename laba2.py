@@ -40,9 +40,9 @@ class MainWindow(QtWidgets.QMainWindow):
         
         self.anim_group = QSequentialAnimationGroup()
         
-        for i in range(0, 361, 4):  
+        for i in range(0, 360, 4):  
             angle = math.radians(i * self.direction) 
-            pointXY = QPoint(int(297.5 + 100 * math.cos(angle)), int(297.5 + 100 * math.sin(angle)))
+            pointXY = QPoint(int(297.5 + 200 * math.cos(angle)), int(297.5 + 200 * math.sin(angle)))
             self.anim = QPropertyAnimation(self.child, b"pos")
             self.anim.setEndValue(pointXY)
             self.anim.setDuration(self.speed) 
@@ -52,7 +52,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.anim_group.start()
 
     def StartDraw(self):
-        c_rad = 200
+        c_rad = 400
         canvas = self.label.pixmap()
         painter = QtGui.QPainter(canvas)
         pen = QtGui.QPen()
